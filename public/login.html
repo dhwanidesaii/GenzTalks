@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - GenzTalks</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --lilac: #e6e6fa;
+        --baby-pink: #ffc0cb;
+        --pastel-purple: #d8bfd8;
+        --pastel-blue: #b0e0e6;
+        --pastel-mint: #98ff98;
+        --text-color: #4a4a4a;
+        --button-primary: #d8bfd8;
+        --button-hover: #c8afd8;
+        --background-primary: #f5f0ff;
+      }
+
+      /* Specific button styles */
+      button[type="submit"],
+      #login-form button,
+      .btn-primary,
+      button.btn,
+      button[type="button"] {
+        background-color: var(--button-primary) !important;
+        color: white !important;
+        border: none !important;
+        padding: 0.75rem !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+        font-weight: 500 !important;
+      }
+
+      button[type="submit"]:hover,
+      #login-form button:hover,
+      .btn-primary:hover,
+      button.btn:hover,
+      button[type="button"]:hover {
+        background-color: var(--button-hover) !important;
+        transform: translateY(-1px) !important;
+      }
+
+      /* Rest of the existing styles */
+      body {
+        font-family: Arial, sans-serif !important;
+        background-color: var(--background-primary) !important;
+        color: var(--text-color) !important;
+      }
+
+      #login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+
+      #login-form {
+        background-color: white !important;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+        width: 400px;
+        border: 2px solid var(--pastel-purple) !important;
+      }
+
+      #login-form input {
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border: 2px solid var(--pastel-purple) !important;
+        border-radius: 8px;
+        transition: all 0.3s ease !important;
+        background-color: white !important;
+        color: var(--text-color) !important;
+      }
+
+      #login-form input:focus {
+        outline: none !important;
+        border-color: var(--button-primary) !important;
+        box-shadow: 0 0 0 3px rgba(216, 191, 216, 0.2) !important;
+      }
+
+      #login-form button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: var(--button-primary) !important;
+        color: white !important;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease !important;
+      }
+
+      #login-form button:hover {
+        background-color: var(--button-hover) !important;
+        transform: translateY(-1px) !important;
+      }
+
+      .error-message {
+        color: #ff6b6b !important;
+        margin-bottom: 1rem;
+        text-align: center;
+        background-color: #fff5f5 !important;
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #ff6b6b !important;
+      }
+
+      .success-message {
+        color: #51cf66 !important;
+        margin-bottom: 1rem;
+        text-align: center;
+        background-color: #f4fce3 !important;
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #51cf66 !important;
+      }
+
+      .register-link {
+        color: var(--button-primary) !important;
+        text-decoration: none;
+        transition: all 0.3s ease !important;
+      }
+
+      .register-link:hover {
+        color: var(--button-hover) !important;
+        text-decoration: underline;
+      }
+
+      h2 {
+        color: var(--text-color) !important;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+      }
+
+      label {
+        color: var(--text-color) !important;
+        font-weight: 500;
+      }
+
+      /* Override all Tailwind classes */
+      .bg-gray-100,
+      .bg-gray-50,
+      .bg-gray-200 {
+        background-color: var(--background-primary) !important;
+      }
+
+      .bg-white {
+        background-color: white !important;
+      }
+
+      .text-gray-700,
+      .text-gray-600,
+      .text-gray-500 {
+        color: var(--text-color) !important;
+      }
+
+      .border-gray-200,
+      .border-gray-300 {
+        border-color: var(--pastel-purple) !important;
+      }
+
+      .hover\:bg-gray-100:hover,
+      .hover\:bg-gray-50:hover {
+        background-color: var(--pastel-purple) !important;
+      }
+
+      .bg-blue-500,
+      .bg-blue-600 {
+        background-color: var(--button-primary) !important;
+      }
+
+      .hover\:bg-blue-600:hover,
+      .hover\:bg-blue-700:hover {
+        background-color: var(--button-hover) !important;
+      }
+
+      .text-blue-500,
+      .text-blue-600 {
+        color: var(--button-primary) !important;
+      }
+
+      .hover\:text-blue-600:hover,
+      .hover\:text-blue-700:hover {
+        color: var(--button-hover) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="login-container">
+      <form id="login-form">
+        <h2 class="text-2xl font-bold mb-4 text-center">Login to GenzTalks</h2>
+        <div id="error-message" class="error-message hidden"></div>
+        <div id="success-message" class="success-message hidden"></div>
+
+        <div class="mb-4">
+          <label for="username" class="block text-sm font-medium mb-1"
+            >Username or Email</label
+          >
+          <input
+            type="text"
+            id="username"
+            placeholder="Enter your username or email"
+            required
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium mb-1"
+            >Password</label
+          >
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <button type="submit">Login</button>
+        <p class="text-center text-sm">
+          Don't have an account?
+          <a href="/register.html" class="register-link">Register here</a>
+        </p>
+      </form>
+    </div>
+
+    <script>
+      const loginForm = document.getElementById("login-form");
+      const errorMessage = document.getElementById("error-message");
+      const successMessage = document.getElementById("success-message");
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: username,
+              password,
+            }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            showSuccess("Login successful!");
+            // Store token and user data
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            // Redirect to chat page
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 1000);
+          } else {
+            showError(data.msg || "Login failed");
+          }
+        } catch (error) {
+          console.error("Error logging in:", error);
+          showError("An error occurred. Please try again.");
+        }
+      });
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove("hidden");
+        successMessage.classList.add("hidden");
+      }
+
+      function showSuccess(message) {
+        successMessage.textContent = message;
+        successMessage.classList.remove("hidden");
+        errorMessage.classList.add("hidden");
+      }
+    </script>
+  </body>
+</html>

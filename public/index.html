@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GenzTalks</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.js"
+    ></script>
+    <style>
+      :root {
+        --lilac: #e6e6fa;
+        --baby-pink: #ffc0cb;
+        --pastel-purple: #d8bfd8;
+        --pastel-blue: #b0e0e6;
+        --pastel-mint: #98ff98;
+        --text-color: #4a4a4a;
+        --button-primary: #d8bfd8;
+        --button-hover: #c8afd8;
+        --background-primary: #f5f0ff;
+      }
+
+      body {
+        font-family: Arial, sans-serif !important;
+        background-color: var(--background-primary) !important;
+        color: var(--text-color) !important;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+      #app-container {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+        background-color: var(--background-primary) !important;
+      }
+      #left-sidebar {
+        width: 15%;
+        background-color: white !important;
+        border-right: 2px solid var(--pastel-purple) !important;
+        display: flex;
+        flex-direction: column;
+      }
+      #chat-main {
+        width: 85%;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: white !important;
+      }
+      #right-sidebar {
+        width: 15%;
+        background-color: white !important;
+        border-left: 2px solid var(--pastel-purple) !important;
+        display: flex;
+        flex-direction: column;
+      }
+      #messages-list {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: var(--background-primary) !important;
+      }
+      #messages {
+        flex-grow: 1;
+        overflow-y: scroll;
+        padding: 1rem;
+        background-color: var(--background-primary) !important;
+      }
+      #message-form {
+        display: flex;
+        padding: 1rem;
+        background-color: white !important;
+        border-top: 2px solid var(--pastel-purple) !important;
+        align-items: center;
+      }
+      #message-input {
+        flex-grow: 1;
+        padding: 0.75rem;
+        border: 2px solid var(--pastel-purple) !important;
+        border-radius: 8px;
+        margin-right: 0.5rem;
+        transition: all 0.3s ease !important;
+        background-color: white !important;
+        color: var(--text-color) !important;
+      }
+      #send-button {
+        background-color: var(--button-primary) !important;
+        color: white !important;
+        border: none !important;
+        padding: 0.75rem !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        font-weight: 500 !important;
+      }
+      #send-button:hover {
+        background-color: var(--button-hover) !important;
+        transform: translateY(-1px) !important;
+      }
+      .message-item {
+        margin-bottom: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        max-width: 70%;
+        word-wrap: break-word;
+        display: flex;
+        align-items: flex-end;
+        border: 2px solid var(--pastel-purple) !important;
+        transition: all 0.3s ease !important;
+      }
+      .message-item.own {
+        background-color: var(--button-primary) !important;
+        color: white !important;
+        align-self: flex-end;
+        margin-left: auto;
+        text-align: right;
+        flex-direction: row-reverse;
+      }
+      .message-item.other {
+        background-color: white !important;
+        align-self: flex-start;
+      }
+      .message-content {
+        display: flex;
+        flex-direction: column;
+      }
+      .message-sender {
+        font-weight: 500;
+        font-size: 0.875rem;
+        color: var(--text-color);
+        margin-bottom: 0.25rem;
+      }
+      .message-text {
+        font-size: 1rem;
+      }
+      .message-timestamp {
+        font-size: 0.75rem;
+        color: var(--text-color);
+        margin-top: 0.25rem;
+        opacity: 0.8;
+      }
+      #messages-container-wrapper {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        overflow-y: auto;
+        background-color: var(--background-primary) !important;
+      }
+      #typing-indicator {
+        padding: 0.75rem;
+        background-color: white !important;
+        border-top: 2px solid var(--pastel-purple) !important;
+      }
+      #login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f0f2f5;
+      }
+      #login-form {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 400px;
+      }
+      #login-form input {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      #login-form button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      #emoji-picker {
+        position: absolute;
+        bottom: 100%;
+        right: 0;
+        margin-bottom: 10px;
+        z-index: 1000;
+      }
+      #chat-container {
+        background-color: white !important;
+        border: 2px solid var(--pastel-purple) !important;
+      }
+      #chat-sidebar {
+        background-color: var(--background-primary) !important;
+        border-right: 2px solid var(--pastel-purple) !important;
+      }
+      #chat-messages {
+        background-color: white !important;
+      }
+      .message {
+        background-color: var(--pastel-blue) !important;
+        border: 1px solid var(--pastel-purple) !important;
+      }
+      .message.own {
+        background-color: var(--button-primary) !important;
+      }
+      #chat-form-container {
+        background-color: var(--background-primary) !important;
+        border-top: 2px solid var(--pastel-purple) !important;
+      }
+      #chat-form input {
+        background-color: white !important;
+        border: 2px solid var(--pastel-purple) !important;
+        color: var(--text-color) !important;
+      }
+      #chat-form input:focus {
+        outline: none !important;
+        border-color: var(--button-primary) !important;
+        box-shadow: 0 0 0 3px rgba(216, 191, 216, 0.2) !important;
+      }
+      #chat-form button {
+        background-color: var(--button-primary) !important;
+        color: white !important;
+        transition: all 0.3s ease !important;
+      }
+      #chat-form button:hover {
+        background-color: var(--button-hover) !important;
+        transform: translateY(-1px) !important;
+      }
+      .menu-button {
+        color: var(--text-color) !important;
+        transition: all 0.3s ease !important;
+      }
+      .menu-button:hover {
+        color: var(--button-primary) !important;
+      }
+      #profile-menu,
+      #settings-menu {
+        background-color: white !important;
+        border: 2px solid var(--pastel-purple) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+      }
+      #profile-menu a,
+      #settings-menu a {
+        color: var(--text-color) !important;
+        transition: all 0.3s ease !important;
+      }
+      #profile-menu a:hover,
+      #settings-menu a:hover {
+        background-color: var(--background-primary) !important;
+      }
+      #logout-button {
+        color: #ff6b6b !important;
+      }
+      #logout-button:hover {
+        background-color: #fff5f5 !important;
+      }
+      /* Override all Tailwind classes */
+      .bg-gray-100,
+      .bg-gray-50,
+      .bg-gray-200 {
+        background-color: var(--background-primary) !important;
+      }
+
+      .bg-white {
+        background-color: white !important;
+      }
+
+      .text-gray-700,
+      .text-gray-600,
+      .text-gray-500 {
+        color: var(--text-color) !important;
+      }
+
+      .border-gray-200,
+      .border-gray-300 {
+        border-color: var(--pastel-purple) !important;
+      }
+
+      .hover\:bg-gray-100:hover,
+      .hover\:bg-gray-50:hover {
+        background-color: var(--pastel-purple) !important;
+      }
+
+      .bg-blue-500,
+      .bg-blue-600 {
+        background-color: var(--button-primary) !important;
+      }
+
+      .hover\:bg-blue-600:hover,
+      .hover\:bg-blue-700:hover {
+        background-color: var(--button-hover) !important;
+      }
+
+      .text-blue-500,
+      .text-blue-600 {
+        color: var(--button-primary) !important;
+      }
+
+      .hover\:text-blue-600:hover,
+      .hover\:text-blue-700:hover {
+        color: var(--button-hover) !important;
+      }
+
+      /* Specific button styles */
+      button[type="submit"],
+      #login-form button,
+      .btn-primary,
+      button.btn,
+      button[type="button"],
+      #send-button {
+        background-color: var(--button-primary) !important;
+        color: white !important;
+        border: none !important;
+        padding: 0.75rem !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        font-weight: 500 !important;
+      }
+
+      button[type="submit"]:hover,
+      #login-form button:hover,
+      .btn-primary:hover,
+      button.btn:hover,
+      button[type="button"]:hover,
+      #send-button:hover {
+        background-color: var(--button-hover) !important;
+        transform: translateY(-1px) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="login-container">
+      <form id="login-form">
+        <h2 class="text-2xl font-bold mb-4 text-center">
+          Welcome to GenzTalks
+        </h2>
+        <input
+          type="text"
+          id="login-email"
+          placeholder="Username or Email"
+          required
+        />
+        <input
+          type="password"
+          id="login-password"
+          placeholder="Password"
+          required
+        />
+        <button type="submit" id="login-button">Login</button>
+        <p class="mt-4 text-center text-gray-600">
+          Don't have an account?
+          <a href="/register" class="text-blue-500 hover:text-blue-700"
+            >Register here</a
+          >
+        </p>
+      </form>
+    </div>
+
+    <div id="app-container" class="hidden">
+      <!-- Left Sidebar - Messages/Conversations -->
+      <div id="left-sidebar">
+        <div
+          class="p-4 flex items-center justify-between border-b border-gray-300"
+        >
+          <h2 class="text-xl font-bold">
+            Messages <span class="text-gray-500 text-sm">(12)</span>
+          </h2>
+          <button class="text-gray-600 hover:text-gray-900">+</button>
+        </div>
+        <div class="p-4 border-b border-gray-300">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Search messages"
+              class="w-full p-2 pl-10 border border-gray-300 rounded-md"
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div id="messages-list" class="flex-grow overflow-y-auto">
+          <!-- The actual user list from Socket.IO will go here -->
+          <ul id="users" class="space-y-2 p-3"></ul>
+        </div>
+        <!-- Bottom Icons for Left Sidebar -->
+        <div
+          class="p-4 border-t border-gray-300 flex justify-around items-center text-gray-600"
+        >
+          <button id="home-button" class="hover:text-blue-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+          </button>
+
+          <!-- Settings icon -->
+          <div class="relative">
+            <button id="settings-button" class="hover:text-blue-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </button>
+            <div
+              id="settings-menu"
+              class="hidden absolute bottom-full left-0 mb-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+            >
+              <div
+                class="py-1"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="settings-button"
+              >
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  role="menuitem"
+                  >Manage Profile</a
+                >
+                <a
+                  href="#"
+                  id="settings-logout-button"
+                  class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                  role="menuitem"
+                  >Logout</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Chat Area -->
+      <div id="chat-main">
+        <header
+          class="bg-white p-4 border-b border-gray-300 flex items-center justify-between"
+        >
+          <div class="flex items-center">
+            <img
+              src="/assets/images/Profile.jpg"
+              alt="Avatar"
+              class="w-10 h-10 rounded-full mr-3"
+            />
+            <div>
+              <h3 class="text-lg font-bold">Public Room</h3>
+            </div>
+          </div>
+          <div class="relative">
+            <button
+              id="profile-menu-button"
+              class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 focus:outline-none"
+            >
+              <img
+                src="/assets/images/Profile.jpg"
+                alt="Profile"
+                class="w-8 h-8 rounded-full"
+              />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <div
+              id="profile-menu"
+              class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+            >
+              <div
+                class="py-1"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="profile-menu-button"
+              >
+                <a
+                  href="/manage-profile.html"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  role="menuitem"
+                  >Manage Profile</a
+                >
+                <a
+                  href="#"
+                  id="logout-button"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  role="menuitem"
+                  >Logout</a
+                >
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div id="messages-container-wrapper">
+          <div
+            id="messages"
+            class="flex-grow flex flex-col p-4 space-y-2"
+          ></div>
+          <div
+            id="typing-indicator"
+            class="text-gray-500 text-sm p-2 bg-white border-t border-gray-300"
+          ></div>
+        </div>
+
+        <form
+          id="message-form"
+          class="p-4 bg-white border-t border-gray-300 flex items-center relative"
+        >
+          <input
+            type="text"
+            id="message-input"
+            placeholder="Type a message..."
+            autocomplete="off"
+            class="flex-grow p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <div class="relative">
+            <button
+              type="button"
+              id="emoji-button"
+              class="p-2 text-gray-500 hover:text-gray-700 ml-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </button>
+            <emoji-picker id="emoji-picker" class="hidden"></emoji-picker>
+          </div>
+          <button
+            type="submit"
+            id="send-button"
+            class="ml-2 bg-blue-500 text-white p-3 rounded-full flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 12h14M12 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const chatForm = document.getElementById("message-form");
+      const messageInput = document.getElementById("message-input");
+      const messagesDiv = document.getElementById("messages");
+      const loginForm = document.getElementById("login-form");
+      const loginContainer = document.getElementById("login-container");
+      const appContainer = document.getElementById("app-container");
+      const leftSidebarUserList = document.querySelector(
+        "#left-sidebar #users"
+      );
+      const typingIndicator = document.getElementById("typing-indicator");
+      const profileMenuButton = document.getElementById("profile-menu-button");
+      const profileMenu = document.getElementById("profile-menu");
+      const logoutButton = document.getElementById("logout-button");
+      const emojiButton = document.getElementById("emoji-button");
+      const emojiPicker = document.getElementById("emoji-picker");
+      const homeButton = document.getElementById("home-button");
+      const settingsButton = document.getElementById("settings-button");
+      const settingsMenu = document.getElementById("settings-menu");
+      const settingsLogoutButton = document.getElementById(
+        "settings-logout-button"
+      );
+
+      let currentUsername = "";
+      let currentRoom = "General"; // Default room
+      let currentUserId = ""; // This holds the current logged-in user's MongoDB _id
+      let privateRecipientId = null; // Stores the _id of the selected private chat recipient
+      let privateRecipientName = null; // Stores the username of the selected private chat recipient
+      let typingTimeout = undefined;
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const loginIdentifier = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+
+        console.log("Attempting login with identifier:", loginIdentifier);
+
+        try {
+          const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: loginIdentifier, password }),
+          });
+
+          const data = await res.json();
+          console.log("Login response:", data);
+
+          if (res.ok) {
+            // Store the token and user data
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+
+            currentUserId = data.user.id;
+            currentUsername = data.user.username;
+
+            console.log("Login successful, joining room");
+            loginContainer.classList.add("hidden");
+            appContainer.classList.remove("hidden");
+
+            socket.emit("joinRoom", {
+              username: currentUsername,
+              room: currentRoom,
+              userId: currentUserId,
+            });
+          } else {
+            console.error("Login failed:", data.msg);
+            alert(`Login failed: ${data.msg}`);
+          }
+        } catch (error) {
+          console.error("Network error:", error);
+          alert("An error occurred. Please try again.");
+        }
+      });
+
+      // Check for existing session
+      window.addEventListener("load", () => {
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (token && user) {
+          currentUserId = user.id;
+          currentUsername = user.username;
+          loginContainer.classList.add("hidden");
+          appContainer.classList.remove("hidden");
+
+          socket.emit("joinRoom", {
+            username: currentUsername,
+            room: currentRoom,
+            userId: currentUserId,
+          });
+        }
+      });
+
+      // Message from server
+      socket.on("message", (message) => {
+        outputMessage(message);
+
+        // Clear typing indicator if message comes from the person who was typing
+        typingIndicator.textContent = "";
+
+        // Scroll down
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+
+      // Get room and users
+      socket.on("roomUsers", ({ room, users }) => {
+        // Only update if not in a private chat context (for now)
+        // Later, we'll refine this to show relevant users based on context
+        if (!privateRecipientId) {
+          // outputRoomName(room); // Not used in current design
+          outputUsers(users);
+        }
+      });
+
+      // Message history from server
+      socket.on("messageHistory", (messages) => {
+        messages.forEach((message) => outputMessage(message));
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+
+      // Typing indicator from server
+      socket.on("typing", ({ username, isPrivate, senderId }) => {
+        if (isPrivate) {
+          // Only show private typing indicator if the current user is the recipient and it's not themselves
+          if (senderId === currentUserId) {
+            // This is the sender typing in a private chat with us
+            typingIndicator.textContent = `You are typing to ${
+              privateRecipientName || "someone"
+            }...`;
+          } else if (privateRecipientId === senderId) {
+            // This is the recipient typing back to us
+            typingIndicator.textContent = `${username} is typing...`;
+          } else {
+            typingIndicator.textContent = ""; // Clear if not relevant to current private chat
+          }
+        } else {
+          // Public typing indicator
+          if (!privateRecipientId && username !== currentUsername) {
+            typingIndicator.textContent = `${username} is typing...`;
+          }
+        }
+      });
+
+      // Stop typing indicator from server
+      socket.on("stopTyping", ({ username, isPrivate, senderId }) => {
+        // Clear typing indicator from that user
+        if (
+          (isPrivate &&
+            (senderId === currentUserId || privateRecipientId === senderId)) ||
+          (!isPrivate && !privateRecipientId && username !== currentUsername)
+        ) {
+          if (typingIndicator.textContent.includes(username)) {
+            typingIndicator.textContent = "";
+          }
+        }
+      });
+
+      // Typing detection
+      messageInput.addEventListener("keydown", () => {
+        if (typingTimeout) {
+          clearTimeout(typingTimeout);
+        }
+        if (privateRecipientId) {
+          socket.emit("typing", {
+            isPrivate: true,
+            recipientId: privateRecipientId,
+          });
+        } else {
+          socket.emit("typing", { room: currentRoom, isPrivate: false });
+        }
+      });
+
+      messageInput.addEventListener("keyup", () => {
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+          if (privateRecipientId) {
+            socket.emit("stopTyping", {
+              isPrivate: true,
+              recipientId: privateRecipientId,
+            });
+          } else {
+            socket.emit("stopTyping", { room: currentRoom, isPrivate: false });
+          }
+        }, 1000); // Stop typing after 1 second of inactivity
+      });
+
+      // Message submit
+      chatForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        // Get message text
+        const msg = messageInput.value;
+
+        if (msg.trim() === "") return;
+
+        if (privateRecipientId) {
+          // Send private message
+          socket.emit("privateMessage", {
+            recipientId: privateRecipientId,
+            text: msg,
+          });
+          // Clear private message context after sending
+          privateRecipientId = null;
+          privateRecipientName = null;
+          messageInput.placeholder = "Type a message..."; // Revert placeholder
+          // Update chat header back to public room
+          document.querySelector("#chat-main header h3").textContent =
+            "Public Room";
+        } else {
+          // Send public message
+          socket.emit("chatMessage", {
+            text: msg,
+            username: currentUsername,
+            room: currentRoom,
+            userId: currentUserId,
+          });
+        }
+
+        // Clear input
+        messageInput.value = "";
+        messageInput.focus();
+
+        // Also emit stop typing when message is sent
+        if (privateRecipientId) {
+          // Check before clearing privateRecipientId
+          socket.emit("stopTyping", {
+            isPrivate: true,
+            recipientId: privateRecipientId,
+          });
+        } else {
+          socket.emit("stopTyping", { room: currentRoom, isPrivate: false });
+        }
+        clearTimeout(typingTimeout); // Clear any pending timeout
+      });
+
+      // Output message to DOM
+      function outputMessage(message) {
+        const div = document.createElement("div");
+        // Apply different styles for own messages vs. others' messages
+        div.classList.add(
+          "message-item",
+          message.username === currentUsername ? "own" : "other"
+        );
+
+        const avatarHtml =
+          message.username !== currentUsername
+            ? `<img src="/assets/images/Profile.jpg" alt="User Avatar" class="w-8 h-8 rounded-full mr-2 self-start">`
+            : "";
+
+        div.innerHTML = `
+            ${avatarHtml}
+            <div class="message-content">
+                <p class="message-sender">${message.username}</p>
+                <p class="message-text">${message.text}</p>
+                <span class="message-timestamp">${message.createdAt}</span>
+            </div>
+        `;
+        messagesDiv.appendChild(div);
+      }
+
+      // Add users to DOM (Left Sidebar - Messages List)
+      function outputUsers(users) {
+        if (leftSidebarUserList) {
+          leftSidebarUserList.innerHTML = `
+                ${users
+                  .map(
+                    (user) => `
+                    <li data-userid="${user.mongoId}" data-socketid="${
+                      user.id
+                    }" class="cursor-pointer hover:bg-gray-300 p-1 rounded">
+                        <div class="flex items-center">
+                            <img src="/assets/images/Profile.jpg" alt="User Avatar" class="w-8 h-8 rounded-full mr-2">
+                            <p class="font-semibold">${user.username} ${
+                      user.id === socket.id ? "(You)" : ""
+                    }</p>
+                        </div>
+                    </li>
+                `
+                  )
+                  .join("")}
+            `;
+
+          // Add click listener to each user for private messaging
+          document
+            .querySelectorAll("#left-sidebar #users li")
+            .forEach((item) => {
+              item.addEventListener("click", (e) => {
+                const userId = item.dataset.userid; // This is now mongoId
+                const socketId = item.dataset.socketid;
+                const username = item
+                  .querySelector("p.font-semibold")
+                  .textContent.replace(" (You)", "")
+                  .trim();
+                if (userId && socketId && socketId !== socket.id) {
+                  // Prevent private messaging oneself
+                  privateRecipientId = userId;
+                  privateRecipientName = username;
+                  messageInput.placeholder = `Private message to ${privateRecipientName}... (Click here to clear)`;
+                  // Update chat header for private chat
+                  document.querySelector(
+                    "#chat-main header h3"
+                  ).textContent = `Private Chat with ${privateRecipientName}`;
+                  messageInput.focus();
+                } else if (socketId === socket.id) {
+                  // Clicking on oneself clears private message context
+                  privateRecipientId = null;
+                  privateRecipientName = null;
+                  messageInput.placeholder = "Type a message...";
+                  // Update chat header for public room
+                  document.querySelector("#chat-main header h3").textContent =
+                    "Public Room";
+                }
+              });
+            });
+        }
+      }
+
+      // Add room name to DOM (optional, for future display)
+      function outputRoomName(room) {
+        // You can update a room name display element here if you add one
+      }
+
+      // Update user list when a new user joins
+      socket.on("userJoined", (user) => {
+        user.avatar = "/assets/images/Profile.jpg"; // Ensure new users get the default avatar
+        users.push(user);
+        updateUsersList();
+      });
+
+      // Menu functionality
+      function toggleMenu(menuToShow, menuToHide) {
+        menuToShow.classList.toggle("hidden");
+        menuToHide.classList.add("hidden");
+      }
+
+      // Profile menu button click
+      profileMenuButton.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu(profileMenu, settingsMenu);
+      };
+
+      // Settings button click
+      settingsButton.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu(settingsMenu, profileMenu);
+      };
+
+      // Click outside to close menus
+      document.onclick = function (e) {
+        if (
+          !profileMenuButton.contains(e.target) &&
+          !profileMenu.contains(e.target) &&
+          !settingsButton.contains(e.target) &&
+          !settingsMenu.contains(e.target)
+        ) {
+          profileMenu.classList.add("hidden");
+          settingsMenu.classList.add("hidden");
+        }
+      };
+
+      // Prevent menu clicks from closing the menu
+      profileMenu.onclick = function (e) {
+        e.stopPropagation();
+      };
+
+      settingsMenu.onclick = function (e) {
+        e.stopPropagation();
+      };
+
+      // Handle logout for both menus
+      logoutButton.onclick = function (e) {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/";
+      };
+
+      settingsLogoutButton.onclick = function (e) {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/";
+      };
+
+      // Emoji picker functionality
+      emojiButton.addEventListener("click", () => {
+        emojiPicker.classList.toggle("hidden");
+      });
+
+      emojiPicker.addEventListener("emoji-click", (event) => {
+        const cursorPos = messageInput.selectionStart;
+        const text = messageInput.value;
+        const newText =
+          text.slice(0, cursorPos) +
+          event.detail.unicode +
+          text.slice(cursorPos);
+        messageInput.value = newText;
+        messageInput.focus();
+        messageInput.setSelectionRange(
+          cursorPos + event.detail.unicode.length,
+          cursorPos + event.detail.unicode.length
+        );
+        emojiPicker.classList.add("hidden");
+      });
+
+      // Close emoji picker when clicking outside
+      document.addEventListener("click", (e) => {
+        if (
+          !emojiButton.contains(e.target) &&
+          !emojiPicker.contains(e.target)
+        ) {
+          emojiPicker.classList.add("hidden");
+        }
+      });
+
+      // Home button functionality
+      homeButton.addEventListener("click", () => {
+        // Clear private message context
+        privateRecipientId = null;
+        privateRecipientName = null;
+        messageInput.placeholder = "Type a message...";
+        // Update chat header for public room
+        document.querySelector("#chat-main header h3").textContent =
+          "Public Room";
+        // Clear any typing indicators
+        typingIndicator.textContent = "";
+        // Emit stop typing event
+        socket.emit("stopTyping", { room: currentRoom, isPrivate: false });
+        clearTimeout(typingTimeout);
+      });
+    </script>
+  </body>
+</html>

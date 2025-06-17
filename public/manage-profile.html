@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Profile - GenzTalks</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --lilac: #e6e6fa;
+        --baby-pink: #ffc0cb;
+        --pastel-purple: #d8bfd8;
+        --pastel-blue: #b0e0e6;
+        --pastel-mint: #98ff98;
+        --text-color: #4a4a4a;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: var(--lilac);
+        color: var(--text-color);
+      }
+
+      #profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+
+      #profile-form {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        width: 400px;
+        border: 2px solid var(--pastel-purple);
+      }
+
+      #profile-form input {
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border: 2px solid var(--pastel-purple);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      #profile-form input:focus {
+        outline: none;
+        border-color: var(--baby-pink);
+        box-shadow: 0 0 0 3px rgba(255, 192, 203, 0.2);
+      }
+
+      #profile-form button {
+        width: 100%;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      #update-button {
+        background-color: var(--baby-pink);
+        color: white;
+      }
+
+      #update-button:hover {
+        background-color: #ffa7b5;
+        transform: translateY(-1px);
+      }
+
+      #back-button {
+        background-color: var(--pastel-purple);
+        color: white;
+      }
+
+      #back-button:hover {
+        background-color: #c8a2c8;
+        transform: translateY(-1px);
+      }
+
+      .error-message {
+        color: #ff6b6b;
+        margin-bottom: 1rem;
+        text-align: center;
+        background-color: #fff5f5;
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #ff6b6b;
+      }
+
+      .success-message {
+        color: #51cf66;
+        margin-bottom: 1rem;
+        text-align: center;
+        background-color: #f4fce3;
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #51cf66;
+      }
+
+      .radio-group {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        background-color: var(--lilac);
+        transition: all 0.3s ease;
+      }
+
+      .radio-option:hover {
+        background-color: var(--pastel-purple);
+      }
+
+      .radio-option input[type="radio"] {
+        accent-color: var(--baby-pink);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      h2 {
+        color: var(--text-color);
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+      }
+
+      label {
+        color: var(--text-color);
+        font-weight: 500;
+      }
+
+      /* Override Tailwind classes */
+      .bg-gray-100 {
+        background-color: var(--lilac) !important;
+      }
+
+      .bg-white {
+        background-color: white !important;
+      }
+
+      .text-gray-700 {
+        color: var(--text-color) !important;
+      }
+
+      .border-gray-200 {
+        border-color: var(--pastel-purple) !important;
+      }
+
+      .hover\:bg-gray-100:hover {
+        background-color: var(--pastel-purple) !important;
+      }
+
+      .bg-blue-500 {
+        background-color: var(--baby-pink) !important;
+      }
+
+      .hover\:bg-blue-600:hover {
+        background-color: #ffa7b5 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="profile-container">
+      <form id="profile-form">
+        <h2 class="text-2xl font-bold mb-4 text-center">Manage Profile</h2>
+        <div id="error-message" class="error-message hidden"></div>
+        <div id="success-message" class="success-message hidden"></div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2"
+            >What would you like to update?</label
+          >
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="update-type" value="username" checked />
+              <span>Username</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="update-type" value="password" />
+              <span>Password</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="username-section">
+          <div class="mb-4">
+            <label for="new-username" class="block text-sm font-medium mb-1"
+              >New Username</label
+            >
+            <input
+              type="text"
+              id="new-username"
+              placeholder="Enter new username"
+            />
+          </div>
+        </div>
+
+        <div id="password-section" class="hidden">
+          <div class="mb-4">
+            <label for="current-password" class="block text-sm font-medium mb-1"
+              >Current Password</label
+            >
+            <input
+              type="password"
+              id="current-password"
+              placeholder="Enter current password"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label for="new-password" class="block text-sm font-medium mb-1"
+              >New Password</label
+            >
+            <input
+              type="password"
+              id="new-password"
+              placeholder="Enter new password"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label for="confirm-password" class="block text-sm font-medium mb-1"
+              >Confirm New Password</label
+            >
+            <input
+              type="password"
+              id="confirm-password"
+              placeholder="Confirm new password"
+            />
+          </div>
+        </div>
+
+        <button type="submit" id="update-button">Update Profile</button>
+        <button type="button" id="back-button">Back to Chat</button>
+      </form>
+    </div>
+
+    <script>
+      const profileForm = document.getElementById("profile-form");
+      const errorMessage = document.getElementById("error-message");
+      const successMessage = document.getElementById("success-message");
+      const backButton = document.getElementById("back-button");
+      const usernameSection = document.getElementById("username-section");
+      const passwordSection = document.getElementById("password-section");
+      const updateTypeRadios = document.getElementsByName("update-type");
+
+      // Check for authentication
+      window.addEventListener("load", () => {
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!token || !user) {
+          window.location.href = "/";
+          return;
+        }
+      });
+
+      // Handle radio button changes
+      updateTypeRadios.forEach((radio) => {
+        radio.addEventListener("change", (e) => {
+          if (e.target.value === "username") {
+            usernameSection.classList.remove("hidden");
+            passwordSection.classList.add("hidden");
+          } else {
+            usernameSection.classList.add("hidden");
+            passwordSection.classList.remove("hidden");
+          }
+        });
+      });
+
+      // Handle form submission
+      profileForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const updateType = document.querySelector(
+          'input[name="update-type"]:checked'
+        ).value;
+        const newUsername = document.getElementById("new-username").value;
+        const currentPassword =
+          document.getElementById("current-password").value;
+        const newPassword = document.getElementById("new-password").value;
+        const confirmPassword =
+          document.getElementById("confirm-password").value;
+
+        console.log("Form submission:", {
+          updateType,
+          newUsername,
+          currentPassword,
+          newPassword,
+          confirmPassword,
+        });
+
+        // Validate based on update type
+        if (updateType === "password") {
+          if (!currentPassword || !newPassword || !confirmPassword) {
+            showError("All password fields are required");
+            return;
+          }
+          if (newPassword !== confirmPassword) {
+            showError("New passwords do not match");
+            return;
+          }
+        } else {
+          if (!newUsername) {
+            showError("New username is required");
+            return;
+          }
+        }
+
+        try {
+          const token = localStorage.getItem("token");
+          const user = JSON.parse(localStorage.getItem("user"));
+
+          if (!token || !user) {
+            showError("You must be logged in to update your profile");
+            return;
+          }
+
+          console.log("Sending request with token:", token);
+
+          const requestBody = {};
+          if (updateType === "username") {
+            requestBody.newUsername = newUsername;
+          } else {
+            requestBody.currentPassword = currentPassword;
+            requestBody.newPassword = newPassword;
+            console.log("Password update request body:", requestBody);
+          }
+
+          console.log("Request body:", requestBody);
+
+          const res = await fetch("/api/auth/update-profile", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          const data = await res.json();
+          console.log("Response:", data);
+
+          if (res.ok) {
+            showSuccess("Profile updated successfully");
+            // Update local storage with new username if username was changed
+            if (updateType === "username") {
+              user.username = newUsername;
+              localStorage.setItem("user", JSON.stringify(user));
+            }
+            // Clear form
+            profileForm.reset();
+          } else {
+            showError(data.msg || "Failed to update profile");
+          }
+        } catch (error) {
+          console.error("Error updating profile:", error);
+          showError("An error occurred. Please try again.");
+        }
+      });
+
+      // Back button functionality
+      backButton.addEventListener("click", () => {
+        window.location.href = "/";
+      });
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove("hidden");
+        successMessage.classList.add("hidden");
+      }
+
+      function showSuccess(message) {
+        successMessage.textContent = message;
+        successMessage.classList.remove("hidden");
+        errorMessage.classList.add("hidden");
+      }
+    </script>
+  </body>
+</html>
